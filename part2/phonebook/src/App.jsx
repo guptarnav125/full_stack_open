@@ -71,19 +71,23 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault()
-    const nameObject = { name: newName , number: newNumber, id: allPersons.length + 1 }
+    const nameObject = { name: newName , number: newNumber, id: allPersons.length + 1 +""}
     if (allPersons.some(person => person.name === newName)) {
       alert(`${newName} is already added to phonebook`)
       setNewName('')
       return
     }
-    const updatedPersons = allPersons.concat(nameObject)
-    setAllPersons(updatedPersons)
-    setPersons(updatedPersons.filter(person =>
-    person.name.toLowerCase().includes(newFilter.toLowerCase())
-  ));
-    setNewName('')
-    setNewNumber('')
+    axios
+      .post('http://localhost:3001/persons', nameObject)
+      .then(response => {
+        const updatedPersons = allPersons.concat(response.data)
+        setAllPersons(updatedPersons)
+        setPersons(updatedPersons.filter(person =>
+        person.name.toLowerCase().includes(newFilter.toLowerCase())
+        ));
+        setNewName('')
+        setNewNumber('')      
+    })
   }
 
   useEffect(() => {
